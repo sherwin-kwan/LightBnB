@@ -1,4 +1,4 @@
-INSERT INTO properties (owner, title, description, cost_per_night, parking_spaces, number_of_bathrooms, number_of_bedrooms, street, city, province, country, post_code, active)
+INSERT INTO properties (owner_id, title, description, cost_per_night, parking_spaces, number_of_bathrooms, number_of_bedrooms, street, city, province, country, post_code, active)
   VALUES 
   (39, 'Potter Manor', 'Lily''s home', 30, 2, 3, 2, '1 Fake Street', 'Godric''s Hollow', 'Scotland', 'UK', '12A12B', true),
   (19, 'Black Manor', 'censored', 10000, 3, 3, 3, '12 Grimmauld Place', 'London', 'England', 'UK', '12C12D', true),
