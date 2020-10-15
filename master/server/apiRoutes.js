@@ -4,7 +4,7 @@ const constants = require('./constants.js');
 module.exports = function(router, database) {
 
   router.get('/properties', (req, res) => {
-    database.getAllProperties(req.query, 20)
+    database.getAllProperties(req.query, constants.maxPropertyResults)
     .then(properties => res.send({properties}))
     .catch(e => {
       console.error(e);
@@ -18,7 +18,7 @@ module.exports = function(router, database) {
       res.error("💩");
       return;
     }
-    database.getAllReservations(userId)
+    database.getAllReservations(userId, constants.maxReservationResults)
     .then(reservations => res.send({reservations}))
     .catch(e => {
       console.error(e);
