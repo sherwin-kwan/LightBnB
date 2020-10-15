@@ -1,14 +1,6 @@
-const pg = require('pg');
-const passwordFile = require('./passwordFile');
 const constants = require('./constants');
-var format = require('pg-format');
-
-const pool = new pg.Pool({
-  user: 'vagrant',
-  password: passwordFile,
-  host: 'localhost',
-  database: 'lightbnb'
-});
+const format = require('pg-format');
+const db = require('./db');
 
 /// Users
 
@@ -18,7 +10,7 @@ const pool = new pg.Pool({
 //  * @return {Promise<{}>} A promise to the user.
 //  */
 const getUserWithId = (id) => {
-  return pool.query(`
+  return db.query(`
   SELECT * FROM users
   WHERE id = $1`, [id])
     .then((res) => {
@@ -36,7 +28,7 @@ exports.getUserWithId = getUserWithId;
  * @return {Promise<{}>} A promise to the user.
  */
 const getUserWithEmail = (email) => {
-  return pool.query(`
+  return db.query(`
   SELECT * FROM users
   WHERE email = $1
     `, [email])
@@ -55,7 +47,7 @@ exports.getUserWithEmail = getUserWithEmail;
 //  * @return {Promise<{}>} A promise to the user.
 //  */
 const addUser = (user) => {
-  return pool.query(`
+  return db.query(`
   INSERT INTO users (name, email, password)
   VALUES ($1, $2, $3)
   RETURNING *;`, [user.name, user.email, user.password])
@@ -114,7 +106,7 @@ const getAllProperties = (options, perPage = constants.maxPropertyResults) => {
     LIMIT $1;
   `;
   // With the full query constructed, we can return results
-  return pool.query(fullQuery, [perPage])
+  return db.query(fullQuery, [perPage])
     .then(res => {
       return res.rows
     })
@@ -146,7 +138,7 @@ const addProperty = (property) => {
   };
   // Use pg-format to sanitize the values clause
   query += `) VALUES (${format(valuesClause)}) RETURNING *;`;
-  return pool.query(query)
+  return db.query(query)
     .then((res) => {
       console.log(res.rows[0]);
       return res.rows[0];
@@ -166,7 +158,7 @@ exports.addProperty = addProperty;
 //  * @return {Promise<[{}]>} A promise to the reservations.
 //  */
 const getAllReservations = (guest_id, limit = 10) => {
-  return pool.query(`
+  return db.query(`
   SELECT properties.*, reservations.start_date AS start_date, reservations.end_date AS end_date, avg(reviews.rating)
     FROM properties
     JOIN reviews ON properties.id = reviews.property_id
