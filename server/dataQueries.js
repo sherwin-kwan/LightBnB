@@ -96,15 +96,16 @@ const getAllProperties = (options, perPage = constants.maxPropertyResults) => {
     } else if (key === 'owner_id') {
       whereClause += `owner_id = ${options.owner_id}`;
     }
-  }
+  };
   // Next, we use pg-format to sanitize the two clauses before interpolating them into the query, in order to avoid SQL injection attacks
   const fullQuery = `
   SELECT properties.*, avg(reviews.rating) 
     FROM properties
-    JOIN reviews ON reviews.property_id = properties.id ${format(whereClause)}
+    LEFT JOIN reviews ON reviews.property_id = properties.id ${format(whereClause)}
     GROUP BY properties.id ${format(havingClause)}
     LIMIT $1;
   `;
+  console.log(fullQuery);
   // With the full query constructed, we can return results
   return db.query(fullQuery, [perPage])
     .then(res => {
