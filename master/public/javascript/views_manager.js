@@ -24,6 +24,9 @@ $(() => {
       case 'logIn':
         $logInForm.appendTo($main);
         break;
+      case 'testing':
+        $testingForm.appendTo($main);
+        break;
       case 'signUp':
         $signUpForm.appendTo($main);
         break;

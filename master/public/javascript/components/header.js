@@ -28,7 +28,7 @@ $(() => {
           <li class="username"> Hello there, ${user.name}</li>
           <li class="create_listing_button">Create Listing</li>
           <li class="my_listing_button">My Listings</li>
-          <li><a href="/testing">Testing</a></li>
+          <li class="testing_button">Testing</li>
           <li class="my_reservations_button">My Reservations</li>
           <li class="logout_button">Log Out</li>
         </ul>
@@ -77,6 +77,9 @@ $(() => {
     views_manager.show('searchProperty');
   });
 
+  $('header').on('click', '.testing_button', () => {
+    views_manager.show('testing');
+  })
   $("header").on('click', '.login_button', () => {
     views_manager.show('logIn');
   });
