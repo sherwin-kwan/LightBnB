@@ -1,5 +1,3 @@
-const properties = require('./json/properties.json');
-const users = require('./json/users.json');
 const pg = require('pg');
 const passwordFile = require('./passwordFile');
 const constants = require('./constants');
@@ -96,7 +94,7 @@ const getAllProperties = (options, perPage = constants.maxPropertyResults) => {
     }
     // Case A
     whereClause += (firstItem) ? ` WHERE ` : ` AND `;
-    firstItem = false;;
+    firstItem = false;
     if (key === 'city') {
       whereClause += `city LIKE '${options.city}%'`;
     } else if (key === 'maximum_price_per_night') {
@@ -115,7 +113,6 @@ const getAllProperties = (options, perPage = constants.maxPropertyResults) => {
     GROUP BY properties.id ${format(havingClause)}
     LIMIT $1;
   `;
-  console.log(fullQuery);
   // With the full query constructed, we can return results
   return pool.query(fullQuery, [perPage])
     .then(res => {
@@ -126,15 +123,39 @@ const getAllProperties = (options, perPage = constants.maxPropertyResults) => {
 
 exports.getAllProperties = getAllProperties;
 
+// /**
+//  * Add a property to the database
+//  * @param {{}} property An object containing all of the property details.
+//  * @return {Promise<{}>} A promise to the property.
+//  */
 
-// SELECT properties.id, properties.title, properties.cost_per_night, avg(reviews.rating)
-//   FROM properties
-//   JOIN reviews ON reviews.property_id = properties.id
-//   WHERE city = 'Vancouver'
-//   GROUP BY properties.id
-//   HAVING avg(reviews.rating) >= 4
-//   ORDER BY cost_per_night
-//   LIMIT 10;
+const addProperty = (property) => {
+  let query = 'INSERT INTO properties (';
+  let valuesClause = '';
+  // A C-style for loop is used to ensure that we can detect the last key-value pair, so we know not to insert a comma
+  for (let i = Object.keys(property).length - 1; i >= 0; i--) {
+    const key = Object.keys(property)[i];
+    query += `${key}`;
+    const value = property[key];
+    valuesClause += (value) ? `'${value}'` : 'null';
+    // The only falsy value is if i = 0, the last key-value pair in the loop. For all preceding pairs, insert an ending comma. For i = 0, insert no comma.
+    if (i) {
+      query += ', ';
+      valuesClause += ', ';
+    }
+  };
+  // Use pg-format to sanitize the values clause
+  query += `) VALUES (${format(valuesClause)}) RETURNING *;`;
+  return pool.query(query)
+    .then((res) => {
+      console.log(res.rows[0]);
+      return res.rows[0];
+    })
+    .catch(err => console.error('query error', err.stack));
+};
+
+exports.addProperty = addProperty;
+
 
 
 // /// Reservations
@@ -162,26 +183,4 @@ const getAllReservations = (guest_id, limit = 10) => {
     .catch(err => console.error('query error', err.stack));
 };
 
-getAllReservations(35).then((rows) => console.log(rows.length));
-
 exports.getAllReservations = getAllReservations;
-
-// ALL OF THE BELOW IS OLD CODE USING SIMULATED DATA
-//
-//
-//
-//
-
-
-// /**
-//  * Add a property to the database
-//  * @param {{}} property An object containing all of the property details.
-//  * @return {Promise<{}>} A promise to the property.
-//  */
-const addProperty = function (property) {
-  const propertyId = Object.keys(properties).length + 1;
-  property.id = propertyId;
-  properties[propertyId] = property;
-  return Promise.resolve(property);
-}
-exports.addProperty = addProperty;
