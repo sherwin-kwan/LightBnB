@@ -1,5 +1,5 @@
 const constants = {
-  maxPropertyResults: 20,
+  maxPropertyResults: 10,
   maxReservationResults: 10
 };
 
