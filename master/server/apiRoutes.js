@@ -1,4 +1,5 @@
 const database = require('./database.js');
+const constants = require('./constants.js');
 
 module.exports = function(router, database) {
 
