@@ -10,7 +10,6 @@ const pool = new pg.Pool({
   database: 'lightbnb'
 });
 
-
 /// Users
 
 // /**
@@ -29,7 +28,6 @@ const getUserWithId = (id) => {
   .catch(err => console.error('query error', err.stack));
 };
 
-getUserWithId(-1).then((res) => console.log(res));
 exports.getUserWithId = getUserWithId;
 
 /**
@@ -50,33 +48,6 @@ const getUserWithEmail = (email) => {
 
 exports.getUserWithEmail = getUserWithEmail;
 
-
-// /// Properties
-
-// /**
-//  * Get all properties.
-//  * @param {{}} options An object containing query options.
-//  * @param {*} limit The number of results to return.
-//  * @return {Promise<[{}]>}  A promise to the properties.
-//  */
-
-const getAllProperties = (options, perPage = 10) => {
-  return pool.query(`
-  SELECT * FROM properties
-  LIMIT $1;
-  `, [perPage])
-    .then(res => res.rows)
-    .catch(err => console.error('query error', err.stack));
-}
-
-
-// ALL OF THE BELOW IS OLD CODE USING SIMULATED DATA
-//
-//
-//
-//
-
-
 // /**
 //  * Add a new user to the database.
 // Note: Password is already hashed before it's inserted as a parameter here.
@@ -94,8 +65,28 @@ const addUser = (user) => {
   .catch(err => console.error('query error', err.stack));
 };
 
-
 exports.addUser = addUser;
+
+// /// Properties
+
+// /**
+//  * Get all properties.
+//  * @param {{}} options An object containing query options.
+//  * @param {*} limit The number of results to return.
+//  * @return {Promise<[{}]>}  A promise to the properties.
+//  */
+
+const getAllProperties = (options, perPage = 10) => {
+  return pool.query(`
+  SELECT * FROM properties
+  LIMIT $1;
+  `, [perPage])
+    .then(res => res.rows)
+    .catch(err => console.error('query error', err.stack));
+};
+
+exports.getAllProperties = getAllProperties;
+
 
 // /// Reservations
 
@@ -104,13 +95,34 @@ exports.addUser = addUser;
 //  * @param {string} guest_id The id of the user.
 //  * @return {Promise<[{}]>} A promise to the reservations.
 //  */
-const getAllReservations = function (guest_id, limit = 10) {
-  return getAllProperties(null, 2);
-}
+const getAllReservations = (guest_id, limit = 10) => {
+  return pool.query(`
+  SELECT properties.*, reservations.start_date AS start_date, reservations.end_date AS end_date, avg(reviews.rating)
+    FROM properties
+    JOIN reviews ON properties.id = reviews.property_id
+    JOIN reservations ON properties.id = reservations.property_id
+    WHERE reservations.guest_id = $1
+    AND reservations.end_date < now()::date
+    GROUP BY properties.id, reservations.id
+    ORDER BY reservations.start_date
+    LIMIT $2;
+`, [guest_id, limit])
+  .then((res) => res.rows)
+  .catch(err => console.error('query error', err.stack));
+};
+
+getAllReservations(24, 10).then(res => console.log(res));
+
 exports.getAllReservations = getAllReservations;
 
+// ALL OF THE BELOW IS OLD CODE USING SIMULATED DATA
+//
+//
+//
+//
 
-exports.getAllProperties = getAllProperties;
+
+
 
 
 // /**
