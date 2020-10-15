@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,19 +10,36 @@
 
   <title>LightBnB</title>
 </head>
+
 <body>
 
   <header id="page-header" class="page-header">
   </header>
+  <div style="padding: 100px">
+    <form id="test-form" class="test-form" action="/testing" method="POST">
+      <p>Testing</p>
+      <div class="test-form__field-wrapper">
+        <input type="text" name="text" placeholder="Enter some text here">
+      </div>
 
+      <div class="test-form__field-wrapper">
+        <input type="text" name="num" placeholder="Enter a number here">
+      </div>
+
+      <div class="test-form__field-wrapper">
+          <button>Submit</button>
+          <a id="test-form__cancel" href="#">Cancel</a>
+      </div>
+    </form>
+  </div>
   <main id="main-content">
-    
+
   </main>
-  
+
   <script src="javascript/libraries/jquery-3.4.0.min.js"></script>
   <script src="javascript/libraries/addressfield/jquery.addressfield.min.js"></script>
   <script src="javascript/libraries/moment.js"></script>
-  
+
   <script src="javascript/network.js"></script>
   <script src="javascript/views_manager.js"></script>
   <script src="javascript/index.js"></script>
@@ -37,4 +55,5 @@
 
 
 </body>
+
 </html>

@@ -28,6 +28,7 @@ $(() => {
           <li class="username"> Hello there, ${user.name}</li>
           <li class="create_listing_button">Create Listing</li>
           <li class="my_listing_button">My Listings</li>
+          <li><a href="/testing">Testing</a></li>
           <li class="my_reservations_button">My Reservations</li>
           <li class="logout_button">Log Out</li>
         </ul>

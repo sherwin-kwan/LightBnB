@@ -1,6 +1,7 @@
 const database = require('./dataQueries');
 const apiRoutes = require('./apiRoutes');
 const userRoutes = require('./userRoutes');
+const db = require('./db');
 
 const path = require('path');
 
@@ -27,6 +28,33 @@ app.use('/api', apiRouter);
 const userRouter = express.Router();
 userRoutes(userRouter, database);
 app.use('/users', userRouter);
+
+// New test code
+
+const addDataToTesting = (data) => {
+  return db.query(`
+  INSERT INTO testing (text, num)
+  VALUES ($1, $2)
+  RETURNING *;
+  `, [data.text, data.num])
+  .then((res) => res.rows[0])
+  .catch((e) => console.log(e));
+};
+
+app.post('/testing', (req, res) => {
+  // Rest operator??
+  console.log({...req.body});
+  addDataToTesting({...req.body})
+    .then(output => {
+      console.log(`Successfully added ${output}`);
+      res.send(output);
+    })
+    .catch(e => {
+      console.error(e);
+      res.send(e);
+    });
+});
+
 
 app.use(express.static(path.join(__dirname, '../public')));
 
