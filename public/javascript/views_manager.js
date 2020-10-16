@@ -10,6 +10,7 @@ $(() => {
     $searchPropertyForm.detach();
     $logInForm.detach();
     $signUpForm.detach();
+    $testingForm.detach();
 
     switch (item) {
       case 'listings':
