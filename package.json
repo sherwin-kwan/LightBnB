@@ -1,8 +1,11 @@
 {
-  "name": "light_bnb_start",
+  "name": "sherwins_lightbnb",
   "version": "1.0.0",
-  "description": "",
+  "description": "Airbnb clone, not finished just testing how to deploy",
   "main": "index.js",
+  "engines": {
+    "node": "14.10.1"
+  },
   "scripts": {
     "sass": "sass --watch sass/main.scss:public/styles/main.css",
     "local": "npx nodemon -L server/index",
